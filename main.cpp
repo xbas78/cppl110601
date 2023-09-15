@@ -5,9 +5,9 @@
   В древности для шифрования сообщений использовался такой способ: все буквы в
 сообщении сдвигались на одно и то же число позиций в алфавите. Число позиций
 могло быть как положительным, так и отрицательным и являлось параметром шифра.
-Если для сдвига на данное число позиций алфавита не хватает, то он зацикливается
-(то есть буква с номером 27 — это снова буква «a», буква с номером 28 — это «b»
-и так далее).
+Если для сдвига на данное число позиций алфавита не хватает, то он
+зацикливается, то есть буква с номером 27 — это снова буква «a», буква с номером
+28 — это «b» и так далее.
   Например, слово abracadabra при сдвиге на 10 позиций превратится в
 klbkmknklbk. Этот простейший шифр называется шифром Цезаря. Регистр букв
 (заглавные и строчные) менять не нужно. Напишите функцию encrypt_caesar от
@@ -19,6 +19,7 @@ klbkmknklbk. Этот простейший шифр называется шиф�
 
   Пример 1
 The quick brown fox jumps over the lazy dog
+
   Результат:
 Ymj vznhp gwtbs ktc ozrux tajw ymj qfed itl
 
@@ -29,6 +30,7 @@ nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
 fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in
 culpa qui officia deserunt mollit anim id est laborum
+
   Результат:
   Knqdl hortl cnknq rhs zlds bnmrdbsdstq zchohrbhmf dkhs rdc cn dhtrlnc sdlonq
 hmbhchctms ts kzanqd ds cnknqd lzfmz zkhptz Ts dmhl zc lhmhl udmhzl pthr
@@ -44,50 +46,50 @@ hm btkoz pth neehbhz cdrdqtms lnkkhs zmhl hc drs kzanqtl
   Что оценивается
 Корректность работы программы по созданию зашифрованной версии слова или текста.
 
-  Как отправить задание на проверку
-Прислать ссылку на repl.it или файл .срр с решением. Также вы можете создать
+  Как отправить задание на проверку:
+Прислать ссылку на repl.it или файл *.срр с решением. Также вы можете создать
 открытый репозиторий в GitHub с содержимым проекта.
 ------------------------------------------------------------------------------*/
 #include <iostream>
 
-// Функция шифрования строки
+constexpr int NUM_SYMBOLS = 'z' - 'a' + 1;
+
+// String encryption function
 std::string encrypt_caesar(std::string str, int key) {
 
   unsigned short len = str.length();
-  key %= 26;
+  key %= NUM_SYMBOLS;
 
   for (unsigned short i = 0; i < len; i++) {
     unsigned short asciiPos = (short) str[i];
     unsigned short newAsciiPos = asciiPos;
 
-    if (asciiPos >= 97 && asciiPos <= 122) {
+    if (asciiPos >= 'a' && asciiPos <= 'z') {
       newAsciiPos = asciiPos + key;
-      if (newAsciiPos > 122) {
-        newAsciiPos -= 26;
-      } else {
-        if (newAsciiPos < 97) {
-          newAsciiPos += 26;
-        }
-      }
+      if (newAsciiPos > 'z') newAsciiPos -= NUM_SYMBOLS;
+      if (newAsciiPos < 'a') newAsciiPos += NUM_SYMBOLS;
     } else {
-      if (asciiPos >= 65 && asciiPos <= 90) {
+      if (asciiPos >= 'A' && asciiPos <= 'Z') {
         newAsciiPos = asciiPos + key;
-        if (newAsciiPos > 90) newAsciiPos -= 26;
-        if (newAsciiPos < 65) newAsciiPos += 26;
+        if (newAsciiPos > 'Z') newAsciiPos -= NUM_SYMBOLS;
+        if (newAsciiPos < 'A') newAsciiPos += NUM_SYMBOLS;
       }
     }
-    str[i] = (char) (newAsciiPos);
+
+    str[i] = (char) newAsciiPos;
   }
+
   return str;
 }
 
-// Функция дешифрования строки
+// String decryption function
 std::string decrypt_caesar(std::string str, int key) {
   return encrypt_caesar(str, -key);
 }
 
 int main() {
-  // Ввод строки
+
+  // String input
   std::string str;
   int key;
   std::cout << "Input your text to encrypt: ";
@@ -95,10 +97,9 @@ int main() {
   std::cout << "Input the key: ";
   std::cin >> key;
 
-  // Вывод результата
+  // Result output
   str = encrypt_caesar(str, key);
-  std::cout << std::endl << "Encrypted text: "<< str << std::endl;
-
+  std::cout << std::endl << "Encrypted text: " << str << std::endl;
   str = decrypt_caesar(str, key);
   std::cout << "Decrypted text: " << str << std::endl;
 
